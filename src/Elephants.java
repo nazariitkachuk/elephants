@@ -14,6 +14,7 @@ public class Elephants {
     private static int[] currentElephantSetting;
     private static int[] weightOfElephants;
     private static int[] suggestedElephantSetting;
+    private static int result = 0;
     static List<String> list = new ArrayList<>();
 
     public static void main(String args[]) {
@@ -29,9 +30,9 @@ public class Elephants {
         Stream<String> lines = br.lines();
         list = br.lines().collect(Collectors.toList());
 
-//        System.out.println(list.get(1));
-//        System.out.println(list.get(2));
-//        System.out.println(list.get(3));
+        System.out.println(list.get(1));
+        System.out.println(list.get(2));
+        System.out.println(list.get(3));
 
 
         int numberOfElephants = Integer.parseInt(list.get(0));

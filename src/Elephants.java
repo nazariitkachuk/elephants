@@ -22,14 +22,15 @@ public class Elephants {
     private static long sumElephantsWeight = 0;
     private static int minElephantWeight;
     private static long result=0;
-    private static String fileNameIn =  "D:\\IntelliJ_Projects\\Elephant\\zadanie_B\\slo1.in";
-    private static String fileNameOut = "D:\\IntelliJ_Projects\\Elephant\\slo1.out";
+
     static List<String> list = new ArrayList<>();
 
     public static void main(String args[]) {
+        String fileName = args[0];
+
         BufferedReader br = null;
         try {
-            br = Files.newBufferedReader(Paths.get(fileNameIn));
+            br = Files.newBufferedReader(Paths.get(fileName));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,16 +68,8 @@ public class Elephants {
                 result += min(sumElephantsWeight + (long) (count - 2) * minElephantWeight, sumElephantsWeight + minElephantWeight + (long) (count + 1) * minElephantWeight );
             }
         }
-//      System.out.println(result);
-        writeUsingFiles(String.valueOf(result));
-    }
+        System.out.println(result);
 
-    private static void writeUsingFiles(String data) {
-        try {
-            Files.write(Paths.get(fileNameOut), data.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void matcherMethod(int[] array,int line) {

@@ -9,16 +9,20 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.Math.min;
+
 public class Elephants {
 
     private static int[] currentElephantSetting;
     private static int[] weightOfElephants;
     private static int[] suggestedElephantSetting;
-    private static int result = 0;
+    private static boolean[] cykl;
+    private static long result = 0;
+    private static int minElephantWeight;
     static List<String> list = new ArrayList<>();
 
     public static void main(String args[]) {
-        String fileName = "D:\\IntelliJ_Projects\\Elephant\\zadanie_B\\slo1.in";
+        String fileName = "D:\\IntelliJ_Projects\\Elephant\\zadanie_B\\slo3.in";
 
         BufferedReader br = null;
         try {
@@ -30,29 +34,53 @@ public class Elephants {
         Stream<String> lines = br.lines();
         list = br.lines().collect(Collectors.toList());
 
-        System.out.println(list.get(1));
-        System.out.println(list.get(2));
-        System.out.println(list.get(3));
+//        System.out.println(list.get(1));
+//        System.out.println(list.get(2));
+//        System.out.println(list.get(3));
 
 
         int numberOfElephants = Integer.parseInt(list.get(0));
         currentElephantSetting = new int[numberOfElephants];
         weightOfElephants = new int[numberOfElephants];
         suggestedElephantSetting = new int[numberOfElephants];
+        cykl  = new boolean[numberOfElephants];
 
-        mutcherMethod(currentElephantSetting,1);
-        mutcherMethod(weightOfElephants,2);
+        mutcherMethod(currentElephantSetting,2);
+        mutcherMethod(weightOfElephants,1);
         mutcherMethod(suggestedElephantSetting,3);
 
-//        for(int i=0;i<currentElephantSetting.length;i++){
-//            System.out.println(currentElephantSetting[i]);
-//        }
-//        for(int i=0;i<weightOfElephants.length;i++){
-//            System.out.println(weightOfElephants[i]);
-//        }
-//        for(int i=0;i<suggestedElephantSetting.length;i++){
-//            System.out.println(suggestedElephantSetting[i]);
-//        }
+        minElephantWeight = weightOfElephants[0];
+
+        for(int i=0;i < weightOfElephants.length;i++)
+        {
+            minElephantWeight=min(minElephantWeight,weightOfElephants[i]);
+        }
+
+        long wynik = 0;
+        for(int i = 0; i < numberOfElephants; ++i)
+        {
+
+            if(!cykl[i])
+            {
+                result = 0;
+                int teraz = i;
+                int miniteraz = 1 << 30;
+                int ile = 0;
+                do
+                {
+                    miniteraz = min(miniteraz, weightOfElephants[teraz]);
+                    result += weightOfElephants[teraz];
+                    teraz = suggestedElephantSetting[teraz];
+                    teraz--;
+                    cykl[teraz] = true;
+                    ++ile;
+                } while(teraz != i);
+                wynik += min(result + (ile - 2) * miniteraz, result + miniteraz + (ile + 1) * minElephantWeight );
+            }
+        }
+
+        System.out.println(wynik);
+
 
     }
 

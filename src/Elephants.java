@@ -22,14 +22,14 @@ public class Elephants {
     private static long sumElephantsWeight = 0;
     private static int minElephantWeight;
     private static long result=0;
+    private static String fileNameIn =  "D:\\IntelliJ_Projects\\Elephant\\zadanie_B\\slo1.in";
+    private static String fileNameOut = "D:\\IntelliJ_Projects\\Elephant\\slo1.out";
     static List<String> list = new ArrayList<>();
 
     public static void main(String args[]) {
-        String fileName = "D:\\IntelliJ_Projects\\Elephant\\zadanie_B\\slo10b.in";
-
         BufferedReader br = null;
         try {
-            br = Files.newBufferedReader(Paths.get(fileName));
+            br = Files.newBufferedReader(Paths.get(fileNameIn));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,16 +43,12 @@ public class Elephants {
         suggestedElephantSetting = new int[numberOfElephants];
         loop  = new boolean[numberOfElephants];
 
-        mutcherMethod(currentElephantSetting,2);
-        mutcherMethod(weightOfElephants,1);
-        mutcherMethod(suggestedElephantSetting,3);
-
-        minElephantWeight = weightOfElephants[0];
-
+        matcherMethod(currentElephantSetting,2);
+        matcherMethod(weightOfElephants,1);
+        matcherMethod(suggestedElephantSetting,3);
 
         for(int i = 0; i < numberOfElephants; ++i)
         {
-
             if(!loop[i])
             {
                 sumElephantsWeight = 0;
@@ -77,13 +73,13 @@ public class Elephants {
 
     private static void writeUsingFiles(String data) {
         try {
-            Files.write(Paths.get("D:\\IntelliJ_Projects\\Elephant\\slo10b.out"), data.getBytes());
+            Files.write(Paths.get(fileNameOut), data.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void mutcherMethod(int[] array,int line) {
+    private static void matcherMethod(int[] array,int line) {
         Pattern p = Pattern.compile("-?\\d+");
         Matcher m = p.matcher(list.get(line));
         int i=0;

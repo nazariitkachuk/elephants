@@ -71,7 +71,16 @@ public class Elephants {
                 result += min(sumElephantsWeight + (long) (count - 2) * minElephantWeight, sumElephantsWeight + minElephantWeight + (long) (count + 1) * minElephantWeight );
             }
         }
-        System.out.println(result);
+//      System.out.println(result);
+        writeUsingFiles(String.valueOf(result));
+    }
+
+    private static void writeUsingFiles(String data) {
+        try {
+            Files.write(Paths.get("D:\\IntelliJ_Projects\\Elephant\\slo10b.out"), data.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void mutcherMethod(int[] array,int line) {

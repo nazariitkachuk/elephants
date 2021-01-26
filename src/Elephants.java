@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -14,71 +15,71 @@ import java.util.stream.Stream;
 import static java.lang.Math.min;
 
 public class Elephants {
+    private static final int WEIGHT = 1;
+    private static final int CURRENT_SETTING = 2;
+    private static final int SUGGESTED_SETTING = 3;
+    private static String WHITESPACE_REGEX = "\\s+";
+    private static String NUM_REGEX = "-?\\d+";
+    private static final Predicate<String> NUMBER_MATCH = e -> e.matches(NUM_REGEX);
 
-    private static int[] currentElephantSetting;
-    private static int[] weightOfElephants;
-    private static int[] suggestedElephantSetting;
-    private static boolean[] loop;
-    private static long sumElephantsWeight = 0;
-    private static int minElephantWeight;
-    private static long result=0;
+    private int[] currentElephantSetting;
+    private int[] weightOfElephants;
+    private int[] suggestedElephantSetting;
+    private boolean[] loop;
+    private long sumElephantsWeight = 0;
+    private int minElephantWeight;
+    private long result = 0;
 
-    static List<String> list = new ArrayList<>();
-
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         String fileName = args[0];
+        new Elephants().findBestSetting(fileName);
 
-        BufferedReader br = null;
-        try {
-            br = Files.newBufferedReader(Paths.get(fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    }
 
-        Stream<String> lines = br.lines();
-        list = br.lines().collect(Collectors.toList());
+    public void findBestSetting(String fileName) throws IOException {
+        Stream<String> lines = Files.lines(Paths.get(fileName));
 
-        int numberOfElephants = Integer.parseInt(list.get(0));
-        currentElephantSetting = new int[numberOfElephants];
-        weightOfElephants = new int[numberOfElephants];
-        suggestedElephantSetting = new int[numberOfElephants];
-        loop  = new boolean[numberOfElephants];
 
-        matcherMethod(currentElephantSetting,2);
-        matcherMethod(weightOfElephants,1);
-        matcherMethod(suggestedElephantSetting,3);
 
-        for(int i = 0; i < numberOfElephants; ++i)
-        {
-            if(!loop[i])
-            {
+        List<String[]> dataSets = lines
+                .map(e -> e.split(WHITESPACE_REGEX))
+                .collect(Collectors.toList());
+        int numberOfElephants= Arrays.stream(dataSets.get(0)).filter(NUMBER_MATCH)
+                .mapToInt(Integer::parseInt).findFirst().orElseThrow();
+
+        loop = new boolean[numberOfElephants];
+
+        weightOfElephants = Arrays.stream(dataSets.get(WEIGHT)).filter(NUMBER_MATCH)
+                .mapToInt(Integer::parseInt)
+                .toArray();
+
+        currentElephantSetting = Arrays.stream(dataSets.get(CURRENT_SETTING)).filter(NUMBER_MATCH)
+                .mapToInt(Integer::parseInt)
+                .toArray();
+
+        suggestedElephantSetting = Arrays.stream(dataSets.get(SUGGESTED_SETTING)).filter(NUMBER_MATCH)
+                .mapToInt(Integer::parseInt)
+                .toArray();
+
+        for (int i = 0; i < numberOfElephants; ++i) {
+            if (!loop[i]) {
                 sumElephantsWeight = 0;
                 minElephantWeight = weightOfElephants[0];
                 int currentElephant = i;
                 int count = 0;
-                do
-                {
+                do {
                     minElephantWeight = min(minElephantWeight, weightOfElephants[currentElephant]);
                     sumElephantsWeight += weightOfElephants[currentElephant];
                     currentElephant = suggestedElephantSetting[currentElephant];
                     currentElephant--;
-                    loop [currentElephant] = true;
+                    loop[currentElephant] = true;
                     count++;
-                } while(currentElephant != i);
-                result += min(sumElephantsWeight + (long) (count - 2) * minElephantWeight, sumElephantsWeight + minElephantWeight + (long) (count + 1) * minElephantWeight );
+                } while (currentElephant != i);
+                result += min(sumElephantsWeight + (long) (count - 2) * minElephantWeight, sumElephantsWeight + minElephantWeight + (long) (count + 1) * minElephantWeight);
             }
         }
         System.out.println(result);
-
     }
 
-    private static void matcherMethod(int[] array,int line) {
-        Pattern p = Pattern.compile("-?\\d+");
-        Matcher m = p.matcher(list.get(line));
-        int i=0;
-        while (m.find()) {
-            array[i] = Integer.parseInt(m.group());
-            i++;
-        }
-    }
+
 }
